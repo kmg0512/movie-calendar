@@ -3,95 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLens - Movie Calendar</title>
+    <title>CineLens - Movie Calendar (React)</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
     <meta name="description" content="A premium visual calendar to track the movies you've watched.">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <h1 class="app-title">CineLens</h1>
-            <div class="month-navigation">
-                <button id="prevMonth" class="nav-btn" aria-label="Previous Month">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <h2 id="currentMonthYear">April 2026</h2>
-                <button id="nextMonth" class="nav-btn" aria-label="Next Month">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-                </button>
-            </div>
-        </header>
-
-        <main class="calendar-container">
-            <div class="calendar-week-headers">
-                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-            </div>
-            <div id="calendarGrid" class="calendar-grid">
-                <!-- Days will be dynamically injected here -->
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal for adding movie -->
-    <div id="movieModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button id="closeModal" class="close-btn" aria-label="Close Modal">&times;</button>
-            <h3 id="modalDateLabel">Add a Movie</h3>
-            
-            <!-- Search View -->
-            <div id="modalSearchView">
-                <div class="movie-search">
-                    <label for="movieSearchInput" class="sr-only">Search Movie</label>
-                    <input type="text" id="movieSearchInput" placeholder="Search a popular movie..." autocomplete="off">
-                    <div id="searchResults" class="search-results hidden">
-                        <!-- Search items will appear here -->
-                    </div>
-                </div>
-
-                <div class="divider"><span>OR</span></div>
-                
-                <div class="custom-url-section">
-                    <label for="customUrlInput" class="sr-only">Custom Image URL</label>
-                    <input type="text" id="customUrlInput" placeholder="Paste custom image URL (e.g. poster.jpg)">
-                    <button id="proceedCustomUrl" class="primary-btn">Enter Details</button>
-                </div>
-            </div>
-
-            <!-- Details View -->
-            <div id="modalDetailsView" class="hidden">
-                <div class="details-header">
-                    <img id="detailsPoster" src="" alt="Movie Poster">
-                    <div class="details-header-info">
-                        <h4 id="detailsTitle">Movie Title</h4>
-                        <button id="changeMovieBtn" class="text-btn">Change Movie</button>
-                    </div>
-                </div>
-                
-                <div class="details-form">
-                    <div class="form-group">
-                        <label for="cinemaInput">영화관 (Cinema)</label>
-                        <input type="text" id="cinemaInput" placeholder="e.g. CGV 용산아이파크몰">
-                    </div>
-                    <div class="form-group">
-                        <label for="seatInput">좌석 (Seat)</label>
-                        <input type="text" id="seatInput" placeholder="e.g. G12, G13">
-                    </div>
-                    <div class="form-group">
-                        <label for="memoInput">기타 메모 (Memo)</label>
-                        <textarea id="memoInput" rows="3" placeholder="How was the movie?"></textarea>
-                    </div>
-                </div>
-
-                <div class="details-actions">
-                    <button id="saveDetailsBtn" class="primary-btn">Save Entry</button>
-                    <button id="removeMovieBtn" class="danger-btn hidden">Remove Movie</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script src="app.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
