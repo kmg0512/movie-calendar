@@ -67,22 +67,27 @@ function App() {
   const saveMovie = (dateStr, movieData) => {
     setWatchedMovies(prev => {
       const dayMovies = prev[dateStr] || [];
+      let nextMovies = [];
       if (movieData.id) {
         // Edit existing movie
-        return {
-          ...prev,
-          [dateStr]: dayMovies.map(m => m.id === movieData.id ? movieData : m)
-        };
+        nextMovies = dayMovies.map(m => m.id === movieData.id ? movieData : m);
       } else {
         // Add new movie
-        return {
-          ...prev,
-          [dateStr]: [...dayMovies, { ...movieData, id: Date.now().toString() }]
-        };
+        nextMovies = [...dayMovies, { ...movieData, id: Date.now().toString() }];
       }
+      
+      // Sort movies chronologically by time
+      nextMovies.sort((a, b) => {
+          const timeA = a.time || '99:99';
+          const timeB = b.time || '99:99';
+          return timeA.localeCompare(timeB);
+      });
+
+      return {
+        ...prev,
+        [dateStr]: nextMovies
+      };
     });
-    // We don't automatically close the modal, as the user might want to see the list again. 
-    // We will let the Modal handle navigating back to the list view.
   };
 
   const removeMovie = (dateStr, movieId) => {

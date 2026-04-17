@@ -205,9 +205,8 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
                                 <div className="form-group">
                                     <label htmlFor="timeInput">상영 시간</label>
                                     <input 
-                                        type="text" 
+                                        type="time" 
                                         id="timeInput" 
-                                        placeholder="예: 14:30 - 16:30"
                                         value={details.time}
                                         onChange={e => setDetails({...details, time: e.target.value})}
                                     />
