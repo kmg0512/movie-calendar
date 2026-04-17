@@ -8,7 +8,7 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
     
     // For details view
     const [tempMovie, setTempMovie] = useState(null); // { id?, poster, title }
-    const [details, setDetails] = useState({ cinema: '', seat: '', memo: '' });
+    const [details, setDetails] = useState({ cinema: '', seat: '', time: '', memo: '' });
 
     useEffect(() => {
         if (!isOpen) return;
@@ -35,7 +35,7 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
 
     const handleSelectNewMovie = (poster, title) => {
         setTempMovie({ poster, title });
-        setDetails({ cinema: '', seat: '', memo: '' });
+        setDetails({ cinema: '', seat: '', time: '', memo: '' });
         setView('details');
     };
 
@@ -44,6 +44,7 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
         setDetails({
             cinema: movie.cinema || '',
             seat: movie.seat || '',
+            time: movie.time || '',
             memo: movie.memo || ''
         });
         setView('details');
@@ -87,7 +88,11 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
                                 <img src={movie.poster} alt={movie.title} />
                                 <div className="movie-list-card-info">
                                     <div className="movie-list-card-title">{movie.title}</div>
-                                    {movie.cinema && <div className="movie-list-card-meta">{movie.cinema} {movie.seat ? `| ${movie.seat}` : ''}</div>}
+                                    {(movie.cinema || movie.time) && (
+                                        <div className="movie-list-card-meta">
+                                            {movie.cinema} {movie.time ? `(${movie.time})` : ''} {movie.seat ? `| ${movie.seat}` : ''}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -176,6 +181,16 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
                                         placeholder="예: CGV 용산아이파크몰"
                                         value={details.cinema}
                                         onChange={e => setDetails({...details, cinema: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="timeInput">상영 시간</label>
+                                    <input 
+                                        type="text" 
+                                        id="timeInput" 
+                                        placeholder="예: 14:30 - 16:30"
+                                        value={details.time}
+                                        onChange={e => setDetails({...details, time: e.target.value})}
                                     />
                                 </div>
                                 <div className="form-group">
