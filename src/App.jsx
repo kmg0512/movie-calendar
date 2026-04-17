@@ -7,7 +7,23 @@ function App() {
   
   const [watchedMovies, setWatchedMovies] = useState(() => {
     const saved = localStorage.getItem('watchedMovies');
-    return saved ? JSON.parse(saved) : {};
+    if (!saved) return {};
+    
+    try {
+      const parsed = JSON.parse(saved);
+      // Migration: Convert old single object format to an array structure if needed
+      const migrated = {};
+      for (const [date, data] of Object.entries(parsed)) {
+        if (!Array.isArray(data)) {
+          migrated[date] = [{ ...data, id: Date.now().toString() + Math.random().toString(36).substr(2, 5) }];
+        } else {
+          migrated[date] = data;
+        }
+      }
+      return migrated;
+    } catch {
+      return {};
+    }
   });
 
   const [modalState, setModalState] = useState({
@@ -49,20 +65,38 @@ function App() {
   };
 
   const saveMovie = (dateStr, movieData) => {
-    setWatchedMovies(prev => ({
-      ...prev,
-      [dateStr]: movieData
-    }));
-    closeModal();
+    setWatchedMovies(prev => {
+      const dayMovies = prev[dateStr] || [];
+      if (movieData.id) {
+        // Edit existing movie
+        return {
+          ...prev,
+          [dateStr]: dayMovies.map(m => m.id === movieData.id ? movieData : m)
+        };
+      } else {
+        // Add new movie
+        return {
+          ...prev,
+          [dateStr]: [...dayMovies, { ...movieData, id: Date.now().toString() }]
+        };
+      }
+    });
+    // We don't automatically close the modal, as the user might want to see the list again. 
+    // We will let the Modal handle navigating back to the list view.
   };
 
-  const removeMovie = (dateStr) => {
+  const removeMovie = (dateStr, movieId) => {
     setWatchedMovies(prev => {
+      const dayMovies = prev[dateStr] || [];
+      const updated = dayMovies.filter(m => m.id !== movieId);
       const next = { ...prev };
-      delete next[dateStr];
+      if (updated.length === 0) {
+        delete next[dateStr];
+      } else {
+        next[dateStr] = updated;
+      }
       return next;
     });
-    closeModal();
   };
 
   return (
@@ -95,10 +129,10 @@ function App() {
         isOpen={modalState.isOpen}
         dateStr={modalState.dateStr}
         dateObj={modalState.dateObj}
-        existingMovie={modalState.dateStr ? watchedMovies[modalState.dateStr] : null}
+        existingMovies={modalState.dateStr ? (watchedMovies[modalState.dateStr] || []) : []}
         onClose={closeModal}
         onSave={(data) => saveMovie(modalState.dateStr, data)}
-        onRemove={() => removeMovie(modalState.dateStr)}
+        onRemove={(id) => removeMovie(modalState.dateStr, id)}
       />
     </div>
   );

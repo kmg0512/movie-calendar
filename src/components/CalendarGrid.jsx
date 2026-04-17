@@ -26,20 +26,32 @@ export default function CalendarGrid({ currentDate, watchedMovies, onDayClick })
                 const cellDate = new Date(year, month, day);
                 const dateStr = formatDateObj(cellDate);
                 const isToday = dateStr === todayStr;
-                const movie = watchedMovies[dateStr];
+                const movies = watchedMovies[dateStr] || [];
 
                 return (
                     <div 
                         key={dateStr}
-                        className={`calendar-day ${isToday ? 'today' : ''} ${movie ? 'has-movie' : ''}`}
+                        className={`calendar-day ${isToday ? 'today' : ''} ${movies.length > 0 ? 'has-movie' : ''}`}
                         onClick={() => onDayClick(dateStr, cellDate)}
                     >
                         <span className="day-number">{day}</span>
-                        {movie && (
-                            <>
-                                <img src={movie.poster} alt={movie.title} className="movie-poster" />
+                        {movies.length > 0 && (
+                            <div className="movie-split-container">
+                                {movies.map((movie, idx) => {
+                                    const yPos = movies.length > 1 ? (idx / (movies.length - 1)) * 100 : 50;
+                                    return (
+                                        <div key={movie.id} className="movie-poster-wrapper">
+                                            <img 
+                                                src={movie.poster} 
+                                                alt={movie.title} 
+                                                className="movie-poster-split" 
+                                                style={{ objectPosition: `center ${yPos}%` }}
+                                            />
+                                        </div>
+                                    );
+                                })}
                                 <div className="day-overlay" />
-                            </>
+                            </div>
                         )}
                     </div>
                 );
