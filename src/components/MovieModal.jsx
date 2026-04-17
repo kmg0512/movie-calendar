@@ -8,7 +8,7 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
     
     // For details view
     const [tempMovie, setTempMovie] = useState(null); // { id?, poster, title }
-    const [details, setDetails] = useState({ cinema: '', seat: '', time: '', memo: '' });
+    const [details, setDetails] = useState({ cinemaBrand: 'CGV', cinemaBranch: '', cinemaScreen: '', seat: '', time: '', memo: '' });
 
     useEffect(() => {
         if (!isOpen) return;
@@ -35,14 +35,16 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
 
     const handleSelectNewMovie = (poster, title) => {
         setTempMovie({ poster, title });
-        setDetails({ cinema: '', seat: '', time: '', memo: '' });
+        setDetails({ cinemaBrand: 'CGV', cinemaBranch: '', cinemaScreen: '', seat: '', time: '', memo: '' });
         setView('details');
     };
 
     const handleEditMovie = (movie) => {
         setTempMovie({ id: movie.id, poster: movie.poster, title: movie.title });
         setDetails({
-            cinema: movie.cinema || '',
+            cinemaBrand: movie.cinemaBrand || 'CGV',
+            cinemaBranch: movie.cinemaBranch || movie.cinema || '', // fallback to movie.cinema if branch doesn't exist
+            cinemaScreen: movie.cinemaScreen || '',
             seat: movie.seat || '',
             time: movie.time || '',
             memo: movie.memo || ''
@@ -88,9 +90,9 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
                                 <img src={movie.poster} alt={movie.title} />
                                 <div className="movie-list-card-info">
                                     <div className="movie-list-card-title">{movie.title}</div>
-                                    {(movie.cinema || movie.time) && (
+                                    {((movie.cinemaBrand && movie.cinemaBrand !== '기타') || movie.cinemaBranch || movie.cinemaScreen || movie.cinema || movie.time) && (
                                         <div className="movie-list-card-meta">
-                                            {movie.cinema} {movie.time ? `(${movie.time})` : ''} {movie.seat ? `| ${movie.seat}` : ''}
+                                            {[movie.cinemaBrand !== '기타' ? movie.cinemaBrand : '', movie.cinemaBranch || movie.cinema, movie.cinemaScreen].filter(Boolean).join(' ')} {movie.time ? `(${movie.time})` : ''} {movie.seat ? `| ${movie.seat}` : ''}
                                         </div>
                                     )}
                                 </div>
@@ -174,14 +176,31 @@ export default function MovieModal({ isOpen, dateStr, dateObj, existingMovies, o
                             
                             <div className="details-form">
                                 <div className="form-group">
-                                    <label htmlFor="cinemaInput">영화관</label>
-                                    <input 
-                                        type="text" 
-                                        id="cinemaInput" 
-                                        placeholder="예: CGV 용산아이파크몰"
-                                        value={details.cinema}
-                                        onChange={e => setDetails({...details, cinema: e.target.value})}
-                                    />
+                                    <label>영화관 상세 정보</label>
+                                    <div className="flex-row">
+                                        <select 
+                                            value={details.cinemaBrand} 
+                                            onChange={e => setDetails({...details, cinemaBrand: e.target.value})}
+                                        >
+                                            <option value="CGV">CGV</option>
+                                            <option value="롯데시네마">롯데시네마</option>
+                                            <option value="메가박스">메가박스</option>
+                                            <option value="기타">기타</option>
+                                        </select>
+                                        <input 
+                                            type="text" 
+                                            className="flex-1-5"
+                                            placeholder="지점 (예: 용산아이파크몰)"
+                                            value={details.cinemaBranch}
+                                            onChange={e => setDetails({...details, cinemaBranch: e.target.value})}
+                                        />
+                                        <input 
+                                            type="text" 
+                                            placeholder="관 (예: 4DX관/3관)"
+                                            value={details.cinemaScreen}
+                                            onChange={e => setDetails({...details, cinemaScreen: e.target.value})}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="timeInput">상영 시간</label>
